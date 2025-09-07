@@ -1,15 +1,12 @@
-import re
-
 from http import HTTPStatus
-from flask import abort, flash, redirect, render_template, request, url_for, jsonify
-from sqlalchemy.exc import IntegrityError
+from flask import jsonify, request
 
 from . import app, db
 from .error_handlers import ApiException
-from .forms import UrlForm
 from .models import URLMap
-from .utility import get_unique_short_id, build_short_url
+from .utility import build_short_url
 from .validators import validate_api_response
+
 
 @app.route('/api/id/<string:short_id>/', methods=['GET'])
 def get_original_url(short_id):

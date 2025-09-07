@@ -25,4 +25,3 @@ def get_unique_short_id(original_link):
 def build_short_url(shortcode):
     domain = request.url_root
     return domain + shortcode
-

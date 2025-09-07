@@ -24,6 +24,7 @@ class ApiException(HttpApiError):
 def api_error(error):
     return jsonify(error.to_dict()), error.status_code
 
+
 @app.errorhandler(HttpException)
 def http_error(error):
     return jsonify(error.to_dict()), error.status_code
@@ -32,6 +33,7 @@ def http_error(error):
 @app.errorhandler(HTTPStatus.NOT_FOUND)
 def page_not_found(error):
     return render_template('404.html'), HTTPStatus.NOT_FOUND
+
 
 @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
 def internal_error(error):

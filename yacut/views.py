@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import abort, flash, redirect, render_template
 from sqlalchemy.exc import IntegrityError
 
 from . import app, db
@@ -60,4 +60,3 @@ def shorten_url_view():
 def follow_short_url(short_id):
     url = URLMap.query.filter_by(short=short_id).first_or_404()
     return redirect(url.original)
-

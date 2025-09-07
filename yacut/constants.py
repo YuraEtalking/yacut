@@ -1,0 +1,12 @@
+"""Константы для web и api"""
+
+
+# Модели, формы.
+MAX_LENGTH_SHORT_FIELD = 16
+MAX_LENGTH_ORIGINAL_FIELD = 1999
+MIN_LENGTH_FIELD = 1
+
+# Константы для utility
+MAX_ATTEMPTS = 10
+LENGTH_GENERATED_SHORTCODE = 6
+SALT_SIZE_BYTES = 3

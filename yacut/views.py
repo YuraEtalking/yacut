@@ -9,7 +9,6 @@ from .models import URLMap
 from .utility import get_unique_short_id, build_short_url
 
 
-
 @app.route('/', methods=['GET', 'POST'])
 def shorten_url_view():
     form = UrlForm()

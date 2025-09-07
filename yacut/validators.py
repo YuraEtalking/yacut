@@ -3,6 +3,7 @@ import re
 from .error_handlers import ApiException
 from .models import URLMap
 from .utility import get_unique_short_id
+from  .constants import MAX_LENGTH_SHORT_FIELD
 
 
 def validate_api_response(data):
@@ -17,7 +18,7 @@ def validate_api_response(data):
     custom_id = data.get('custom_id')
     if custom_id:
         if (re.sub(pattern, '', data['custom_id'])
-              or len(data['custom_id']) > 16):
+              or len(data['custom_id']) > MAX_LENGTH_SHORT_FIELD):
             raise ApiException('Указано недопустимое имя для короткой ссылки')
 
         if URLMap.query.filter_by(original=data['url']).first() is not None:

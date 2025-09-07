@@ -1,12 +1,21 @@
 from datetime import datetime
 
 from . import db
+from  .constants import (
+    MAX_LENGTH_SHORT_FIELD,
+    MAX_LENGTH_ORIGINAL_FIELD
+)
 
 
 class URLMap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    original = db.Column(db.String(1999), nullable=False)
-    short = db.Column(db.String(16),unique=True, index=True, nullable=False)
+    original = db.Column(db.String(MAX_LENGTH_ORIGINAL_FIELD), nullable=False)
+    short = db.Column(
+        db.String(MAX_LENGTH_SHORT_FIELD),
+        unique=True,
+        index=True,
+        nullable=False
+    )
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def from_dict(self, data):

@@ -6,17 +6,21 @@ from sqlalchemy import select, exists
 
 from . import db
 from .models import URLMap
+from  .constants import (
+    MAX_ATTEMPTS,
+    LENGTH_GENERATED_SHORTCODE,
+    SALT_SIZE_BYTES
+)
 
 
 def get_unique_short_id(original_link):
-    max_attempts = 10
     attempt = 0
-    while attempt < max_attempts:
-        salt = secrets.token_bytes(3)
+    while attempt < MAX_ATTEMPTS:
+        salt = secrets.token_bytes(SALT_SIZE_BYTES)
         attempt += 1
         shortcode = hashlib.sha256(
             original_link.encode("utf-8") + salt
-        ).hexdigest()[:6]
+        ).hexdigest()[:LENGTH_GENERATED_SHORTCODE]
         check = select(exists().where(URLMap.short == shortcode))
         if not db.session.execute(check).scalar():
             break

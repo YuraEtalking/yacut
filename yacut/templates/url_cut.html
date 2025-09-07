@@ -27,40 +27,44 @@
             {% endif %}
 
             {{ form.custom_id(class="form-control form-control-lg py-3 mb-3", placeholder=form.custom_id.label.text) }}
+            {% if form.custom_id.errors %}
+            <p>
+              <span style="color:red">
+                {% for error in form.custom_id.errors %}
+                  {{ error }}
+                {% endfor %}
+              </span>
+            </p>
+            {% endif %}
+
             {{ form.submit(class="btn btn-primary") }}
           </form>
         </div>
         <div class="col-sm">
-          <p class="py-3 mb-3">
-          {% with messages = get_flashed_messages() %}
-            {% if messages %}
-              {% for message in messages %}
-                {{ message }}
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-          </p>
         </div>
       </div>
     </div>
-
+    <p class="text-center my-4">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </p>
     <div class="container">
       <div class="row ">
-        <div class="col-sm">
-        </div>
-        <div class="col-sm">
+        <div class="col-sm"></div>
+        <div class="col-sm text-center">
           {% if url %}
-          <p class="text-center">
-            <h5 class="text-center">Ваша ссылка:</h5>
-            <a href="{{ url.url_link }}">{{ url.short_url }}</a>
-          </p>
+            <h5>Ваша ссылка:</h5>
+            <a href="{{ url.original_url }}">{{ url.short_url }}</a>
           {% endif %}
         </div>
-        <div class="col-sm">
-        </div>
+        <div class="col-sm"></div>
       </div>
     </div>
-
   </section>
 </main>
 {% endblock %}

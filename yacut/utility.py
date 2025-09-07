@@ -22,6 +22,7 @@ def get_unique_short_id(original_link):
             break
     return shortcode
 
-def get_short_link(shot):
+def build_short_url(shortcode):
     domain = request.url_root
-    return domain + shot
+    return domain + shortcode
+

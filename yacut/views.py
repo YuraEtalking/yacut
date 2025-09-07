@@ -3,10 +3,10 @@ from flask import abort, flash, redirect, render_template, request, url_for
 from sqlalchemy.exc import IntegrityError
 
 from . import app, db
-from .error_handlers import ShortIdGenerationError
+from .error_handlers import HttpException
 from .forms import UrlForm
 from .models import URLMap
-from .utility import get_unique_short_id, get_short_link
+from .utility import get_unique_short_id, build_short_url
 
 
 
@@ -17,8 +17,8 @@ def shorten_url_view():
         original_link = form.original_link.data
         url_in_db = URLMap.query.filter_by(original=original_link).first()
         if url_in_db is not None:
-            flash('"Короткая ссылка для этого адреса уже существует."')
-            short_url = get_short_link(url_in_db.short)
+            flash('"Предложенный вариант короткой ссылки уже существует."')
+            short_url = build_short_url(url_in_db.short)
             return render_template(
                 'url_cut.html',
                 url={
@@ -33,7 +33,7 @@ def shorten_url_view():
             if not custom_id:
                 custom_id = get_unique_short_id(original_link)
                 if not custom_id:
-                    raise ShortIdGenerationError(
+                    raise HttpException(
                         'Не удалось сгенерировать короткую ссылку.'
                     )
 
@@ -47,7 +47,7 @@ def shorten_url_view():
             db.session.rollback()
             abort(HTTPStatus.INTERNAL_SERVER_ERROR)
 
-        short_url = get_short_link(url.short)
+        short_url = build_short_url(url.short)
         return render_template(
             'url_cut.html',
             url={'original_url': url.original, 'short_url': short_url},
@@ -56,8 +56,8 @@ def shorten_url_view():
     return render_template('url_cut.html', form=form)
 
 
-@app.route('/<string:slug>')
-def follow_short_url(slug):
-    url = URLMap.query.filter_by(short=slug).first_or_404()
+@app.route('/<string:short_id>')
+def follow_short_url(short_id):
+    url = URLMap.query.filter_by(short=short_id).first_or_404()
     return redirect(url.original)
 

@@ -9,12 +9,6 @@ class URLMap(db.Model):
     short = db.Column(db.String(16),unique=True, index=True, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    # def to_dict(self, short):
-    #     return dict(
-    #         url=self.original,
-    #         short_link=self.short,
-    #     )
-
     def from_dict(self, data):
         for field in ['original', 'short']:
             if field in data:

@@ -7,7 +7,8 @@ class UrlForm(FlaskForm):
     original_link = URLField(
         'Введите ссылку',
         validators=[URL(
-            message='Введите ссылку. Ссылка должна начинаться на "https://"',
+            message='Введите ссылку. '
+                    'Ссылка должна начинаться на "https:// и иметь домен."',
             require_tld=True
         ),
         Length(

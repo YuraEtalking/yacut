@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# JetBrains
+.idea/
+*.iml
+
 # C extensions
 *.so
 
@@ -129,3 +133,6 @@ dmypy.json
 .pyre/
 
 .vscode
+
+# ОС и прочее
+.DS_Store

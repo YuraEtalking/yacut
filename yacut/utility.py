@@ -1,3 +1,5 @@
+"""Вспомогательные функции."""
+
 import hashlib
 import secrets
 
@@ -6,7 +8,7 @@ from sqlalchemy import select, exists
 
 from . import db
 from .models import URLMap
-from  .constants import (
+from .constants import (
     MAX_ATTEMPTS,
     LENGTH_GENERATED_SHORTCODE,
     SALT_SIZE_BYTES
@@ -14,6 +16,7 @@ from  .constants import (
 
 
 def get_unique_short_id(original_link):
+    """Генерирует уникальный шорткод для заданной ссылки."""
     attempt = 0
     while attempt < MAX_ATTEMPTS:
         salt = secrets.token_bytes(SALT_SIZE_BYTES)
@@ -26,6 +29,8 @@ def get_unique_short_id(original_link):
             break
     return shortcode
 
+
 def build_short_url(shortcode):
+    """Строит полный короткий URL на основе текущего домена и шорткода."""
     domain = request.url_root
     return domain + shortcode

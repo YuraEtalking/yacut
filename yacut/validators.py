@@ -1,45 +1,38 @@
-import re
+"""Валидация данных API."""
 
+from .constants import MAX_LENGTH_SHORT_FIELD, SHORT_PATTERN, URL_PATTERN
 from .error_handlers import ApiException
 from .models import URLMap
 from .utility import get_unique_short_id
-from  .constants import MAX_LENGTH_SHORT_FIELD
 
 
 def validate_api_response(data):
-    short_pattern = r'^[A-Za-z0-9]+$'
-    # Паттерн валидатора URL из WTForms, что бы соответствовать форме.
-    url_pattern = (
-            r"^[a-z]+://"
-            r"(?P<host>[^\/\?:]+)"
-            r"(?P<port>:[0-9]+)?"
-            r"(?P<path>\/.*?)?"
-            r"(?P<query>\?.*)?$"
-        )
-
+    """Валидирует данные запроса и возвращает словарь с original и short."""
     if data is None:
         raise ApiException('Отсутствует тело запроса')
 
-    elif 'url' not in data or not data['url']:
+    url = data.get('url')
+    if not url:
         raise ApiException('"url" является обязательным полем!')
 
-    elif not re.fullmatch(url_pattern, data['url']):
+    if not URL_PATTERN.fullmatch(url):
         raise ApiException('Недопустимое имя для "url"')
 
     custom_id = data.get('custom_id')
+
     if custom_id:
-        if (not re.fullmatch(short_pattern, data['custom_id'])
-              or len(data['custom_id']) > MAX_LENGTH_SHORT_FIELD):
+        if (not SHORT_PATTERN.fullmatch(custom_id)
+                or len(custom_id) > MAX_LENGTH_SHORT_FIELD):
             raise ApiException('Указано недопустимое имя для короткой ссылки')
 
-        if URLMap.query.filter_by(original=data['url']).first() is not None:
+        if URLMap.query.filter_by(short=custom_id).first() is not None:
             raise ApiException(
                 'Предложенный вариант короткой ссылки уже существует.'
             )
     else:
-        data['custom_id'] = get_unique_short_id(data['url'])
+        custom_id = get_unique_short_id(url)
 
-    data['original'] = data.pop('url')
-    data['short'] = data.pop('custom_id')
-
-    return data
+    return {
+        'original': url,
+        'short': custom_id,
+    }

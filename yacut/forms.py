@@ -21,7 +21,7 @@ class UrlForm(FlaskForm):
             MIN_LENGTH_FIELD,
             MAX_LENGTH_ORIGINAL_FIELD,
             message=' Длинна ссылки не может быть менее %(min)d и '
-                    'не более %(max)d символов.'
+                    'более %(max)d символов.'
         )]
     )
     custom_id = StringField(
@@ -30,7 +30,7 @@ class UrlForm(FlaskForm):
             MIN_LENGTH_FIELD,
             MAX_LENGTH_SHORT_FIELD,
             message=' Длинна короткой ссылки не может быть менее %(min)d и '
-                    'не более %(max)d символов.'
+                    'более %(max)d символов.'
         ),
             Optional(),
             Regexp(

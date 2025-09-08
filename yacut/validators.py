@@ -7,7 +7,15 @@ from  .constants import MAX_LENGTH_SHORT_FIELD
 
 
 def validate_api_response(data):
-    pattern = r'^[A-Za-z0-9]+$'
+    short_pattern = r'^[A-Za-z0-9]+$'
+    # Паттерн валидатора URL из WTForms, что бы соответствовать форме.
+    url_pattern = (
+            r"^[a-z]+://"
+            r"(?P<host>[^\/\?:]+)"
+            r"(?P<port>:[0-9]+)?"
+            r"(?P<path>\/.*?)?"
+            r"(?P<query>\?.*)?$"
+        )
 
     if data is None:
         raise ApiException('Отсутствует тело запроса')
@@ -15,9 +23,12 @@ def validate_api_response(data):
     elif 'url' not in data or not data['url']:
         raise ApiException('"url" является обязательным полем!')
 
+    elif not re.fullmatch(url_pattern, data['url']):
+        raise ApiException('Недопустимое имя для "url"')
+
     custom_id = data.get('custom_id')
     if custom_id:
-        if (re.sub(pattern, '', data['custom_id'])
+        if (not re.fullmatch(short_pattern, data['custom_id'])
               or len(data['custom_id']) > MAX_LENGTH_SHORT_FIELD):
             raise ApiException('Указано недопустимое имя для короткой ссылки')
 

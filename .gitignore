@@ -136,3 +136,4 @@ dmypy.json
 
 # ОС и прочее
 .DS_Store
+html/

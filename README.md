@@ -35,3 +35,16 @@ python3 -m pip install --upgrade pip
 ```
 pip install -r requirements.txt
 ```
+
+После изменений в моделях, если такие необходимы:
+```
+flask db migrate
+```
+Для применения изменений в базе данных:
+```
+flask db upgrade
+```
+Запуск приложения:
+```
+flask run 
+```

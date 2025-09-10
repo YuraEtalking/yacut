@@ -1,6 +1,7 @@
 """Обработчики ошибок Flask и пользовательские исключения API."""
 
 from http import HTTPStatus
+from typing import Optional
 
 from flask import jsonify, render_template
 
@@ -10,26 +11,36 @@ from . import app, db
 class HttpApiError(Exception):
     """Базовое исключение для API и HTTP."""
 
-    def __init__(self, message, status_code=None):
-        super().__init__()
-        self.message = message
+    def __init__(
+            self,
+            message: str,
+            status_code: Optional[int] = None
+    ) -> None:
+        super().__init__(message)
+        self.message: str = message
         if status_code is not None:
             self.status_code = status_code
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str]:
         return dict(message=self.message)
 
 
-class HttpException(HttpApiError):
+class ShortIdFailedGenerateError(HttpApiError):
     """Исключение HTTP, по умолчанию 500."""
 
-    status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+    status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class ApiException(HttpApiError):
     """Исключение API, по умолчанию 400."""
 
-    status_code = HTTPStatus.BAD_REQUEST
+    status_code: int = HTTPStatus.BAD_REQUEST
+
+
+class ShortIdAlreadyExistsError(HttpApiError):
+    """Исключение API, по умолчанию 400."""
+
+    status_code: int = HTTPStatus.BAD_REQUEST
 
 
 @app.errorhandler(ApiException)
@@ -37,9 +48,14 @@ def api_error(error):
     return jsonify(error.to_dict()), error.status_code
 
 
-@app.errorhandler(HttpException)
+@app.errorhandler(ShortIdFailedGenerateError)
 def http_error(error):
     db.session.rollback()
+    return jsonify(error.to_dict()), error.status_code
+
+
+@app.errorhandler(ShortIdAlreadyExistsError)
+def short_already_exists_error(error):
     return jsonify(error.to_dict()), error.status_code
 
 

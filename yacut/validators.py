@@ -1,12 +1,14 @@
 """Валидация данных API."""
 
+from typing import Any, Mapping, Optional
+
 from .constants import MAX_LENGTH_SHORT_FIELD, SHORT_PATTERN, URL_PATTERN
 from .error_handlers import ApiException
-from .models import URLMap
-from .utility import get_unique_short_id
 
 
-def validate_api_response(data):
+def validate_api_response(
+        data: Optional[Mapping[str, Any]]
+) -> dict[str, Optional[str]]:
     """Валидирует данные запроса и возвращает словарь с original и short."""
     if data is None:
         raise ApiException('Отсутствует тело запроса')
@@ -23,14 +25,11 @@ def validate_api_response(data):
     if custom_id:
         if (not SHORT_PATTERN.fullmatch(custom_id)
                 or len(custom_id) > MAX_LENGTH_SHORT_FIELD):
+            # Тест требует точно указать именно эту фразу для ошибки.
             raise ApiException('Указано недопустимое имя для короткой ссылки')
 
-        if URLMap.query.filter_by(short=custom_id).first() is not None:
-            raise ApiException(
-                'Предложенный вариант короткой ссылки уже существует.'
-            )
     else:
-        custom_id = get_unique_short_id(url)
+        custom_id = None
 
     return {
         'original': url,
